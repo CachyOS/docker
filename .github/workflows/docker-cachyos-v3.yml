@@ -2,9 +2,11 @@ name: CachyOS-v3 Docker Image
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '41 13 * * *'
   push:
     branches:
-      - 'main'
+      - 'master'
 
 jobs:
   docker:
