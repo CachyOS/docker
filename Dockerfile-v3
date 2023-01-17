@@ -1,0 +1,5 @@
+FROM cachyos/cachyos:latest
+LABEL org.opencontainers.image.description="CachyOS - Arch-based distribution offering an easy installation, several customizations, and unique performance optimization. - v3 optimized Packages"
+
+COPY pacman-v3.conf /etc/pacman.conf
+RUN pacman -Syu --noconfirm
