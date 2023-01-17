@@ -1,4 +1,4 @@
-name: ci
+name: CachyOS-v3 Docker Image
 
 on:
   workflow_dispatch:
