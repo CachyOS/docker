@@ -2,7 +2,7 @@ FROM archlinux:base-devel
 LABEL org.opencontainers.image.description="CachyOS - Arch-based distribution offering an easy installation, several customizations, and unique performance optimization."
 
 RUN  pacman -Syu --noconfirm && \
-     pacman -S --needed --noconfirm pacman-contrib git openssh sudo curl
+     pacman -S --needed --noconfirm pacman-contrib git openssh sudo curl cachyos-hooks fastfetch
 COPY pacman.conf /etc/pacman.conf 
 RUN  curl https://raw.githubusercontent.com/CachyOS/CachyOS-PKGBUILDS/master/cachyos-mirrorlist/cachyos-mirrorlist -o /etc/pacman.d/cachyos-mirrorlist
 
