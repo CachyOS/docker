@@ -1,5 +1,11 @@
-FROM cachyos/cachyos:latest
-LABEL org.opencontainers.image.description="CachyOS - Arch-based distribution offering an easy installation, several customizations, and unique performance optimization. - v3 optimized Packages"
+FROM cachyos/cachyos:latest as rootfs
 
 COPY pacman-v3.conf /etc/pacman.conf
-RUN pacman -Syu --noconfirm
+RUN pacman -Syu --noconfirm && \
+    rm -rf /var/lib/pacman/sync/* && \
+    find /var/cache/pacman/ -type f -delete
+
+FROM scratch
+LABEL org.opencontainers.image.description="CachyOS - Arch-based distribution offering an easy installation, several customizations, and unique performance optimization. - v3 optimized Packages"
+COPY --from=rootfs / /
+CMD ["/usr/bin/bash"]

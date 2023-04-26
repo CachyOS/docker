@@ -1,5 +1,4 @@
-FROM archlinux:base-devel
-LABEL org.opencontainers.image.description="CachyOS - Arch-based distribution offering an easy installation, several customizations, and unique performance optimization."
+FROM archlinux:base-devel AS rootfs
 
 RUN  pacman -Syu --noconfirm && \
      pacman -S --needed --noconfirm pacman-contrib git openssh sudo curl 
@@ -13,4 +12,11 @@ RUN  pacman-key --init && \
      pacman-key --lsign-key F3B607488DB35A47 && \
      pacman -Sy && \
 	 pacman -S --needed --noconfirm cachyos-keyring cachyos-mirrorlist cachyos-v3-mirrorlist cachyos-v4-mirrorlist cachyos-hooks && \
-	 pacman -Syu --noconfirm
+	 pacman -Syu --noconfirm && \
+     rm -rf /var/lib/pacman/sync/* && \
+     find /var/cache/pacman/ -type f -delete
+
+FROM scratch
+LABEL org.opencontainers.image.description="CachyOS - Arch-based distribution offering an easy installation, several customizations, and unique performance optimization."
+COPY --from=rootfs / /
+CMD ["/usr/bin/bash"]
