@@ -10,6 +10,11 @@ RUN pacman -Syu --noconfirm && \
         wget words xorg-xauth zip \
         mesa vulkan-intel vulkan-radeon vulkan-icd-loader \
         base-devel git paru && \
+    for sh in fish zsh; do \
+        for dir in /bin /usr/bin /usr/sbin; do \
+            grep -qxF "$dir/$sh" /etc/shells || echo "$dir/$sh" >> /etc/shells; \
+        done; \
+    done && \
     rm -rf /var/lib/pacman/sync/* && \
     find /var/cache/pacman/ -type f -delete
 
