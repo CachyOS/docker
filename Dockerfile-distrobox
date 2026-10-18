@@ -1,0 +1,21 @@
+FROM cachyos/cachyos-v3:latest AS rootfs
+
+RUN pacman -Syu --noconfirm && \
+    pacman -S --needed --noconfirm \
+        bash bash-completion fish zsh \
+        bc curl diffutils findutils glibc glibc-locales gnupg iputils \
+        inetutils keyutils less lsof man-db man-pages mtr ncurses nss-mdns \
+        openssh pigz pinentry procps-ng rsync shadow sudo tcpdump time \
+        traceroute tree tzdata unzip util-linux util-linux-libs vte-common \
+        wget words xorg-xauth zip \
+        mesa vulkan-intel vulkan-radeon vulkan-icd-loader \
+        base-devel git paru && \
+    rm -rf /var/lib/pacman/sync/* && \
+    find /var/cache/pacman/ -type f -delete
+
+RUN touch /.containersetupdone
+
+FROM scratch
+LABEL org.opencontainers.image.description="CachyOS for distrobox - v3 optimized packages, with distrobox's dependencies, fish, base-devel and paru preinstalled."
+COPY --from=rootfs / /
+CMD ["/usr/bin/bash"]
