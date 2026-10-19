@@ -1,9 +1,17 @@
+FROM cachyos/cachyos:latest as qemu-x86_64-static
+
+RUN pacman -Sy && \
+    pacman -S --needed --noconfirm qemu-user-static
+
 FROM cachyos/cachyos:latest as rootfs
 
+COPY --from=qemu-x86_64-static --chmod=755 /usr/bin/qemu-x86_64-static /tmp/qemu-x86_64-static 
+
 COPY pacman-v4.conf /etc/pacman.conf
-RUN pacman -Syu --noconfirm && \
-    rm -rf /var/lib/pacman/sync/* && \
-    find /var/cache/pacman/ -type f -delete
+RUN /tmp/qemu-x86_64-static --cpu Skylake-Server-v5 pacman -Syu --noconfirm && \
+    /tmp/qemu-x86_64-static --cpu Skylake-Server-v5 rm -rf /var/lib/pacman/sync/* && \
+    /tmp/qemu-x86_64-static --cpu Skylake-Server-v5 find /var/cache/pacman/ -type f -delete && \
+    /tmp/qemu-x86_64-static --cpu Skylake-Server-v5 find /tmp/qemu-x86_64-static -type f -delete 
 
 FROM scratch
 LABEL org.opencontainers.image.description="CachyOS - Arch-based distribution offering an easy installation, several customizations, and unique performance optimization. - v4 optimized Packages"
